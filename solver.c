@@ -149,8 +149,11 @@ static void apply_single_move(CubeState* cube, char face) {
         rotate_face_cw(cube, 4);
         
         /* Cycle edges: U(bottom) -> R(left) -> D(top) -> L(right) -> U(bottom) */
-        cube->stickers[2]  = original.stickers[19]; /* U2 <- L3 */
-        cube->stickers[3]  = original.stickers[17]; /* U3 <- L1 */
+          /* NOTE: ensure these form two separate 4-cycles (U2->R0->D0->L1 and U3->R2->D1->L3)
+              Previously this used L3/L1 which created an 8-cycle and made the inverse
+              move incorrect. Use L1 for U2 and L3 for U3. */
+          cube->stickers[2]  = original.stickers[17]; /* U2 <- L1 */
+          cube->stickers[3]  = original.stickers[19]; /* U3 <- L3 */
         cube->stickers[8]  = original.stickers[2];  /* R0 <- U2 */
         cube->stickers[10] = original.stickers[3];  /* R2 <- U3 */
         cube->stickers[20] = original.stickers[8];  /* D0 <- R0 */
