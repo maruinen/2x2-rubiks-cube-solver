@@ -198,8 +198,11 @@ class Cube:
                 val_L3 = self._get_color(packed_state, 19)
 
                 # Perform the cyclic assignments
-                temp_packed_state = self._set_color(temp_packed_state, 2, val_L3) # U gets from L
-                temp_packed_state = self._set_color(temp_packed_state, 3, val_L1)
+                # Forms two separate 4-cycles for proper inverse behavior
+                # Cycle 1: 2 -> 8 -> 20 -> 17 -> 2
+                # Cycle 2: 3 -> 10 -> 21 -> 19 -> 3
+                temp_packed_state = self._set_color(temp_packed_state, 2, val_L1) # U gets from L (fixed!)
+                temp_packed_state = self._set_color(temp_packed_state, 3, val_L3)
 
                 temp_packed_state = self._set_color(temp_packed_state, 8, val_U2) # R gets from U
                 temp_packed_state = self._set_color(temp_packed_state, 10, val_U3)
