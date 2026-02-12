@@ -471,8 +471,11 @@ if __name__ == "__main__":
         st.title("2x2 Rubik's Cube Solver")
     with col_time:
         from datetime import datetime
-        current_time = datetime.now().strftime("%m/%d %H:%M:%S")
-        st.markdown(f"<small style='color: gray'>{current_time}</small>", unsafe_allow_html=True)
+        # Get the last modified time of app.py
+        app_file_path = os.path.abspath(__file__)
+        mtime = os.path.getmtime(app_file_path)
+        last_modified = datetime.fromtimestamp(mtime).strftime("%m/%d %H:%M:%S")
+        st.markdown(f"<small style='color: gray'>{last_modified}</small>", unsafe_allow_html=True)
     
     st.write("Enter the current state of your 2x2 cube to get solving instructions.")
 
