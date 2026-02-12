@@ -49,7 +49,7 @@ typedef struct {
 } BFSNode;
 
 /* --- Visited State Tracking (using simple array-based hash set) --- */
-#define VISITED_TABLE_SIZE 1000000
+#define VISITED_TABLE_SIZE 6000000
 typedef struct {
     CubeState state;
     bool occupied;
