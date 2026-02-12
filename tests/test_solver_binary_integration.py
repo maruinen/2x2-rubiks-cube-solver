@@ -17,8 +17,9 @@ OR
 YR
 """
 
-    solver_path = os.path.join(os.path.dirname(__file__), "solver")
-    assert os.path.exists(solver_path) and os.access(solver_path, os.X_OK), "solver binary not found or not executable"
+    test_dir = os.path.dirname(os.path.abspath(__file__))
+    solver_path = os.path.join(os.path.dirname(test_dir), "bin", "solver")
+    assert os.path.exists(solver_path) and os.access(solver_path, os.X_OK), f"solver binary not found or not executable at {solver_path}"
 
     with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
         f.write(content)

@@ -256,7 +256,8 @@ def _try_c_solver(cube: Cube):
     """
     # Get the directory where this script is located
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    solver_binary = os.path.join(script_dir, "solver")
+    # Look for solver binary in ../bin/solver relative to src/app.py
+    solver_binary = os.path.join(os.path.dirname(script_dir), "bin", "solver")
     
     # DEBUG: Log to console
     print(f"[C SOLVER DEBUG] Looking for binary at: {solver_binary}", flush=True)

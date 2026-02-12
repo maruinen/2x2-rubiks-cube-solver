@@ -14,6 +14,6 @@ build/
 .DS_Store
 *.egg
 # Compiled C solver binary
-/src/solver
+bin/
 /solver# Work directories
 work/
