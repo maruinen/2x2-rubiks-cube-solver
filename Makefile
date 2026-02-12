@@ -12,8 +12,9 @@ help:
 
 # Build the C solver
 build:
-	gcc -O2 -o src/solver src/solver.c
-	@echo "✓ Solver binary compiled: src/solver"
+	mkdir -p bin
+	gcc -O2 -o bin/solver src/solver.c
+	@echo "✓ Solver binary compiled: bin/solver"
 
 # Run integration tests
 test: build
@@ -35,7 +36,7 @@ install:
 
 # Clean up: remove binaries, cache, and temp files
 clean:
-	rm -f src/solver
+	rm -f bin/solver
 	rm -rf __pycache__ src/__pycache__ tests/__pycache__
 	rm -f *.pyc src/*.pyc tests/*.pyc
 	rm -f /tmp/issue4_state.txt
