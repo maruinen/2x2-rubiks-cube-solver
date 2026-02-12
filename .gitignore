@@ -13,3 +13,7 @@ dist/
 build/
 .DS_Store
 *.egg
+# Compiled C solver binary
+/src/solver
+/solver# Work directories
+work/
