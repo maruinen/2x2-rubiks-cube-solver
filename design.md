@@ -67,3 +67,43 @@ The solver will return a sequence of moves. These moves will be translated into 
 *   More advanced solving algorithms for optimal move counts.
 *   Pre-scrambled examples.
 
+## 7. Recent fixes and notes
+
+### Fix: F move cycle ordering (Issue #3)
+During development we discovered a bug in the F move implementation where the
+edge stickers were permuted as an 8-cycle instead of two 4-cycles. This made
+inverse moves (F') behave incorrectly and produced hard-to-diagnose failures
+when composing moves.
+
+- Root cause: incorrect assignment of L->U indices when applying the F move.
+- Resolution: swap the L assignments so the cycles are:
+    - Cycle 1: positions 2 -> 8 -> 20 -> 17 -> 2
+    - Cycle 2: positions 3 -> 10 -> 21 -> 19 -> 3
+
+This fix was applied both in `app.py` (Python logic) and in `solver.c` (C
+solver). Tests and trace scripts were used to reproduce and verify the issue.
+
+### Fix: C solver timeout on specific sequences (Issue #4)
+Symptom: the C solver timed out exploring an excessive number of nodes for the
+sequence `U, F, R, U, F`. The solver showed exponential growth at depth 7.
+
+Cause: the same F-move cycle bug (above) existed in `solver.c`, which caused
+the search state space to explode in certain branches.
+
+Resolution: corrected the F move permutation in `solver.c`, recompiled the
+binary and verified the solver can find a solution quickly for the problematic
+state (example solution found: `F' U' R' F' U'`).
+
+### Tests and verification
+- `test_issue_3_reproduction.py`, `trace_f_bug.py`, and `debug_f_move.py` were
+    used to reproduce and verify the F-move bug and its fix.
+- Integration test for the C solver behavior should be added to prevent
+    regressions (suggested: add a test invoking the C solver on `state4.txt` or
+    the reproduced temporary file and assert it completes within a timeout).
+
+---
+
+If you want, I can add an automated integration test that runs the `solver`
+binary on the reproduced input and asserts solution correctness within a
+configured timeout.
+
