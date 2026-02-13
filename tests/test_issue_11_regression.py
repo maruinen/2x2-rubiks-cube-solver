@@ -276,5 +276,38 @@ class TestIssue11(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
         self.assertIn("Solution", result.stdout)
 
+    def test_sequence_20_moves(self):
+        sequence = ["U", "F", "R"] * 7
+        moves = sequence[:20]
+        cube = Cube()
+        for m in moves:
+            cube = cube.apply_move(m)
+        print(f"\nTesting sequence (20 moves): {moves}")
+        result = self.run_solver(cube)
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("Solution", result.stdout)
+
+    def test_sequence_25_moves(self):
+        sequence = ["U", "F", "R"] * 9
+        moves = sequence[:25]
+        cube = Cube()
+        for m in moves:
+            cube = cube.apply_move(m)
+        print(f"\nTesting sequence (25 moves): {moves}")
+        result = self.run_solver(cube)
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("Solution", result.stdout)
+
+    def test_sequence_30_moves(self):
+        sequence = ["U", "F", "R"] * 10
+        moves = sequence[:30]
+        cube = Cube()
+        for m in moves:
+            cube = cube.apply_move(m)
+        print(f"\nTesting sequence (30 moves): {moves}")
+        result = self.run_solver(cube)
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("Solution", result.stdout)
+
 if __name__ == '__main__':
     unittest.main()
