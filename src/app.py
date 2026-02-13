@@ -347,45 +347,93 @@ def _try_c_solver(cube: Cube):
                 pass
 
 
-def _solve_cube_python(initial_cube: Cube, max_depth: int = 10, updater_func=None):
+def _solve_cube_python(initial_cube: Cube, max_depth: int = 18, updater_func=None):
     """
-    Solves a 2x2 Rubik's cube using Breadth-First Search (BFS) in Python.
+    Solves a 2x2 Rubik's cube using Bidirectional Breadth-First Search (BFS) in Python.
     Returns a list of moves to solve the cube, or None if no solution is found.
     """
-    print("[DEBUG PYTHON SOLVER] Called! This should NOT happen!", flush=True)
-    print(f"[DEBUG PYTHON SOLVER] Cube: {str(initial_cube)[:40]}...", flush=True)
     if initial_cube.is_solved():
-        if updater_func:
-            updater_func("Depth: 0")
         return []
 
-    queue = collections.deque([(initial_cube, [])])
-    visited = {str(initial_cube): None}
+    solved_cube = Cube()
     
-    max_current_depth = 0
-
-    while queue:
-        current_cube, path = queue.popleft()
-
-        if len(path) > max_depth:
-            continue
-
-        current_depth = len(path)
-        if updater_func and current_depth > max_current_depth:
-            max_current_depth = current_depth
-            updater_func(f"Searching at depth: {max_current_depth}")
-            time.sleep(0.01) # Small delay to allow UI to update
-
-        if current_cube.is_solved():
-            return path
-
-        for move in current_cube.get_possible_moves():
-            next_cube = current_cube.apply_move(move)
-            if str(next_cube) not in visited:
-                visited[str(next_cube)] = (current_cube, move)
-                queue.append((next_cube, path + [move]))
+    # Forward search structures: state -> path
+    fwd_visited = {initial_cube.state: []}
+    fwd_queue = collections.deque([initial_cube.state])
     
-    return None # Should not be reached for a solvable 2x2 cube
+    # Backward search structures: state -> path
+    bwd_visited = {solved_cube.state: []}
+    bwd_queue = collections.deque([solved_cube.state])
+
+    def get_inverse_move(move):
+        if move.endswith("'"): return move[0]
+        if move.endswith("2"): return move
+        return move + "'"
+
+    def simplify_moves(moves):
+        if not moves: return moves
+        res = []
+        for m in moves:
+            if res and res[-1][0] == m[0]:
+                # Combine same face moves
+                f = m[0]
+                m1 = res[-1][1:] or "1"
+                m2 = m[1:] or "1"
+                def to_val(x): return 2 if x=="2" else (3 if x=="'" else 1)
+                val = (to_val(m1) + to_val(m2)) % 4
+                res.pop()
+                if val == 1: res.append(f)
+                elif val == 2: res.append(f + "2")
+                elif val == 3: res.append(f + "'")
+            else:
+                res.append(m)
+        return res
+
+    for depth in range((max_depth // 2) + 1):
+        if updater_func:
+            updater_func(f"Searching at depth: {depth * 2}")
+
+        # Expand forward by one level
+        for _ in range(len(fwd_queue)):
+            curr_state = fwd_queue.popleft()
+            path = fwd_visited[curr_state]
+            last_move_face = path[-1][0] if path else None
+            
+            curr_cube = Cube(packed_state=curr_state)
+            for move in curr_cube.get_possible_moves():
+                if move[0] == last_move_face: continue
+                next_cube = curr_cube.apply_move(move)
+                if next_cube.state not in fwd_visited:
+                    new_path = path + [move]
+                    if next_cube.state in bwd_visited:
+                        # Found a solution!
+                        bwd_path = bwd_visited[next_cube.state]
+                        full_solution = new_path + [get_inverse_move(m) for m in reversed(bwd_path)]
+                        return simplify_moves(full_solution)
+                    fwd_visited[next_cube.state] = new_path
+                    fwd_queue.append(next_cube.state)
+
+        # Expand backward by one level
+        for _ in range(len(bwd_queue)):
+            curr_state = bwd_queue.popleft()
+            path = bwd_visited[curr_state]
+            last_move_face = path[-1][0] if path else None
+
+            curr_cube = Cube(packed_state=curr_state)
+            for move in curr_cube.get_possible_moves():
+                if move[0] == last_move_face: continue
+                next_cube = curr_cube.apply_move(move)
+                if next_cube.state not in bwd_visited:
+                    new_path = path + [move]
+                    if next_cube.state in fwd_visited:
+                        # Found a solution!
+                        fwd_path = fwd_visited[next_cube.state]
+                        full_solution = fwd_path + [get_inverse_move(m) for m in reversed(new_path)]
+                        return simplify_moves(full_solution)
+                    bwd_visited[next_cube.state] = new_path
+                    bwd_queue.append(next_cube.state)
+
+    return None
 
 
 
