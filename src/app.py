@@ -527,7 +527,7 @@ if __name__ == "__main__":
         app_file_path = os.path.abspath(__file__)
         mtime = os.path.getmtime(app_file_path)
         last_modified = datetime.fromtimestamp(mtime).strftime("%m/%d %H:%M:%S")
-        st.markdown(f"<small style='color: gray'>{last_modified}</small>", unsafe_allow_html=True)
+        st.markdown(f"<small style='color: gray'>Last update: {last_modified}</small>", unsafe_allow_html=True)
     
     st.write("Enter the current state of your 2x2 cube to get solving instructions.")
 
