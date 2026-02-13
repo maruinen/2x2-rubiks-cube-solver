@@ -196,18 +196,85 @@ class TestIssue11(unittest.TestCase):
         for m in moves:
             cube = cube.apply_move(m)
             
-        print(f"\nTesting failing sequence: {moves}")
+        print(f"\nTesting failing sequence (8 moves): {moves}")
         result = self.run_solver(cube)
         print(f"Return code: {result.returncode}")
         print(f"Stdout: {result.stdout[:200]}...")
         
-        # We expect this to FAIL or TIMEOUT based on the issue description.
-        # However, for a reproduction script, we often assert the failure to confirm it.
-        # But if we want to "fix" it, we want this test to eventually PASS.
-        # So I will assert that it SUCCEEDS, and expect the test to fail now.
-        
         self.assertEqual(result.returncode, 0, "Solver failed (non-zero return code)")
         self.assertIn("Solution", result.stdout, "Solver did not find a solution")
+
+    def test_sequence_9_moves(self):
+        # U, F, R, U, F, R, U, F, R
+        moves = ['U', 'F', 'R', 'U', 'F', 'R', 'U', 'F', 'R']
+        cube = Cube()
+        for m in moves:
+            cube = cube.apply_move(m)
+        
+        print(f"\nTesting sequence (9 moves): {moves}")
+        result = self.run_solver(cube)
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("Solution", result.stdout)
+
+    def test_sequence_10_moves(self):
+        # U, F, R, U, F, R, U, F, R, U
+        moves = ['U', 'F', 'R', 'U', 'F', 'R', 'U', 'F', 'R', 'U']
+        cube = Cube()
+        for m in moves:
+            cube = cube.apply_move(m)
+        
+        print(f"\nTesting sequence (10 moves): {moves}")
+        result = self.run_solver(cube)
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("Solution", result.stdout)
+
+    def test_sequence_11_moves(self):
+        # U, F, R, U, F, R, U, F, R, U, F
+        moves = ['U', 'F', 'R', 'U', 'F', 'R', 'U', 'F', 'R', 'U', 'F']
+        cube = Cube()
+        for m in moves:
+            cube = cube.apply_move(m)
+        
+        print(f"\nTesting sequence (11 moves): {moves}")
+        result = self.run_solver(cube)
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("Solution", result.stdout)
+
+    def test_sequence_12_moves(self):
+        # U, F, R, U, F, R, U, F, R, U, F, R
+        moves = ['U', 'F', 'R', 'U', 'F', 'R', 'U', 'F', 'R', 'U', 'F', 'R']
+        cube = Cube()
+        for m in moves:
+            cube = cube.apply_move(m)
+        
+        print(f"\nTesting sequence (12 moves): {moves}")
+        result = self.run_solver(cube)
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("Solution", result.stdout)
+
+    def test_sequence_15_moves(self):
+        # U, F, R, U, F, R, U, F, R, U, F, R, U, F, R
+        moves = ['U', 'F', 'R', 'U', 'F', 'R', 'U', 'F', 'R', 'U', 'F', 'R', 'U', 'F', 'R']
+        cube = Cube()
+        for m in moves:
+            cube = cube.apply_move(m)
+        
+        print(f"\nTesting sequence (15 moves): {moves}")
+        result = self.run_solver(cube)
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("Solution", result.stdout)
+
+    def test_sequence_18_moves(self):
+        # U, F, R, U, F, R, U, F, R, U, F, R, U, F, R, U, F, R
+        moves = ['U', 'F', 'R', 'U', 'F', 'R', 'U', 'F', 'R', 'U', 'F', 'R', 'U', 'F', 'R', 'U', 'F', 'R']
+        cube = Cube()
+        for m in moves:
+            cube = cube.apply_move(m)
+        
+        print(f"\nTesting sequence (18 moves): {moves}")
+        result = self.run_solver(cube)
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("Solution", result.stdout)
 
 if __name__ == '__main__':
     unittest.main()
