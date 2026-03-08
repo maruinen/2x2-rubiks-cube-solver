@@ -1,0 +1,1 @@
+If a shell command using `python` fails with a 'command not found' error, automatically attempt to run the same command again using `python3`.
