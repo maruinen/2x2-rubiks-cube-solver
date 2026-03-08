@@ -1,1 +1,0 @@
-When encountering an `AttributeError` for `st.experimental_rerun()` in a Streamlit app, automatically replace it with the current standard `st.rerun()` to resolve the error.
